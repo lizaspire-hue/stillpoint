@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { MEDIA_CATEGORIES, type MediaCategory, type MediaItem, type MediaType } from "@/lib/media"
+import { createUploadTargets, deleteMediaItem, saveMediaItem } from "@/app/admin/actions"
 
 const EMPTY = {
   title: "",
@@ -14,7 +15,7 @@ const EMPTY = {
   description: "",
 }
 
-export function MediaManager({ initialItems, userId }: { initialItems: MediaItem[]; userId: string }) {
+export function MediaManager({ initialItems }: { initialItems: MediaItem[] }) {
   const [items, setItems] = useState<MediaItem[]>(initialItems)
   const [form, setForm] = useState(EMPTY)
   const [mediaFile, setMediaFile] = useState<File | null>(null)
@@ -25,21 +26,9 @@ export function MediaManager({ initialItems, userId }: { initialItems: MediaItem
 
   const set = (key: keyof typeof EMPTY, value: string) => setForm((f) => ({ ...f, [key]: value }))
 
-  const uploadFile = async (file: File, prefix: string) => {
-    const supabase = createClient()
-    const ext = file.name.split(".").pop()
-    const path = `${prefix}/${userId}/${crypto.randomUUID()}.${ext}`
-    const { error: upErr } = await supabase.storage.from("media").upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-    })
-    if (upErr) throw upErr
-    const { data } = supabase.storage.from("media").getPublicUrl(path)
-    return data.publicUrl
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const formEl = e.currentTarget as HTMLFormElement
     setError(null)
     setStatus(null)
 
@@ -50,42 +39,47 @@ export function MediaManager({ initialItems, userId }: { initialItems: MediaItem
 
     setSaving(true)
     try {
-      setStatus("Uploading media file...")
-      const mediaUrl = await uploadFile(mediaFile, form.media_type)
+      // 1. Ask the server for signed upload targets (auth checked server-side).
+      setStatus("Preparing upload...")
+      const targets = await createUploadTargets({
+        mediaFileName: mediaFile.name,
+        thumbFileName: thumbFile?.name ?? null,
+      })
 
-      let thumbnailUrl: string | null = null
-      if (thumbFile) {
+      // 2. Upload files straight to storage via the signed URLs.
+      const supabase = createClient()
+      setStatus("Uploading media file...")
+      const mediaUp = await supabase.storage
+        .from("media")
+        .uploadToSignedUrl(targets.media.path, targets.media.token, mediaFile)
+      if (mediaUp.error) throw mediaUp.error
+
+      if (thumbFile && targets.thumbnail) {
         setStatus("Uploading thumbnail...")
-        thumbnailUrl = await uploadFile(thumbFile, "thumbnails")
+        const thumbUp = await supabase.storage
+          .from("media")
+          .uploadToSignedUrl(targets.thumbnail.path, targets.thumbnail.token, thumbFile)
+        if (thumbUp.error) throw thumbUp.error
       }
 
+      // 3. Save the metadata row (service role, server-side).
       setStatus("Saving entry...")
-      const supabase = createClient()
-      const { data, error: insErr } = await supabase
-        .from("media_items")
-        .insert({
-          title: form.title,
-          category: form.category,
-          media_type: form.media_type,
-          meta: form.meta || null,
-          duration: form.duration || null,
-          description: form.description || null,
-          media_url: mediaUrl,
-          thumbnail_url: thumbnailUrl,
-          created_by: userId,
-        })
-        .select("*")
-        .single()
+      const saved = await saveMediaItem({
+        title: form.title,
+        category: form.category,
+        media_type: form.media_type,
+        meta: form.meta,
+        duration: form.duration,
+        description: form.description,
+        mediaPath: targets.media.path,
+        thumbnailPath: targets.thumbnail?.path ?? null,
+      })
 
-      if (insErr) throw insErr
-
-      setItems((prev) => [data as MediaItem, ...prev])
+      setItems((prev) => [saved, ...prev])
       setForm(EMPTY)
       setMediaFile(null)
       setThumbFile(null)
       setStatus("Added to the library.")
-      // reset native file inputs
-      const formEl = e.target as HTMLFormElement
       formEl.reset()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong while saving.")
@@ -96,13 +90,12 @@ export function MediaManager({ initialItems, userId }: { initialItems: MediaItem
   }
 
   const handleDelete = async (id: string) => {
-    const supabase = createClient()
-    const { error: delErr } = await supabase.from("media_items").delete().eq("id", id)
-    if (delErr) {
-      setError(delErr.message)
-      return
+    try {
+      await deleteMediaItem(id)
+      setItems((prev) => prev.filter((it) => it.id !== id))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete item.")
     }
-    setItems((prev) => prev.filter((it) => it.id !== id))
   }
 
   return (

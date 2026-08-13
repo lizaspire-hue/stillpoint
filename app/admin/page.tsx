@@ -39,7 +39,7 @@ export default async function AdminPage() {
       </header>
 
       <div className="wrap">
-        <MediaManager initialItems={(items as MediaItem[]) ?? []} userId={user.id} />
+        <MediaManager initialItems={(items as MediaItem[]) ?? []} />
       </div>
     </div>
   )

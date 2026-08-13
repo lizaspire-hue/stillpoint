@@ -31,7 +31,7 @@ export default function LoginPage() {
   return (
     <main className="auth-shell">
       <div className="auth-card">
-        <p className="eyebrow">Innerly studio</p>
+        <p className="eyebrow">Strong Point studio</p>
         <h1>Sign in</h1>
         <p className="auth-sub">Access the library dashboard to add meditations, yoga, music and movement.</p>
         <form onSubmit={handleLogin}>

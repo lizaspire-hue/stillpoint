@@ -4,7 +4,7 @@ export default function SignUpSuccessPage() {
   return (
     <main className="auth-shell">
       <div className="auth-card">
-        <p className="eyebrow">Innerly studio</p>
+        <p className="eyebrow">Strong Point studio</p>
         <h1>Check your inbox</h1>
         <div className="auth-note">
           We&apos;ve sent a confirmation link to your email. Confirm it, then sign in to reach the dashboard.

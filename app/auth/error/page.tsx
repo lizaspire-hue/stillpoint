@@ -4,7 +4,7 @@ export default function AuthErrorPage() {
   return (
     <main className="auth-shell">
       <div className="auth-card">
-        <p className="eyebrow">Innerly studio</p>
+        <p className="eyebrow">Strong Point studio</p>
         <h1>Something went wrong</h1>
         <div className="auth-error">
           We couldn&apos;t complete that sign-in. The link may have expired or already been used.

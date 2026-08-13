@@ -27,7 +27,7 @@ export default async function AdminPage() {
       <header className="admin-topbar">
         <div className="wrap">
           <div className="admin-brand">
-            Stillpoint<span>Studio</span>
+            Innerly<span>Studio</span>
           </div>
           <div className="admin-actions">
             <Link href="/" target="_blank" rel="noreferrer">

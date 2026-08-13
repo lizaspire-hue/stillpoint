@@ -46,7 +46,7 @@ export default function SignUpPage() {
   return (
     <main className="auth-shell">
       <div className="auth-card">
-        <p className="eyebrow">Stillpoint studio</p>
+        <p className="eyebrow">Innerly studio</p>
         <h1>Create account</h1>
         <p className="auth-sub">Set up a studio account to manage the media library.</p>
         <form onSubmit={handleSignUp}>

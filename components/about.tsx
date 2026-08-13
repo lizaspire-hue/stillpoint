@@ -5,7 +5,7 @@ export function About() {
         <div className="about-portrait">
           <img
             src="/images/spiral.png"
-            alt="Stillpoint emblem — a warm terracotta spiral representing a continuous journey of small decisions"
+            alt="Innerly emblem — a warm terracotta spiral representing a continuous journey of small decisions"
           />
         </div>
         <div className="about-copy">

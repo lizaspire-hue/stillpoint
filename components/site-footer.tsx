@@ -5,7 +5,7 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div>
             <div className="footer-logo">
-              still<span style={{ color: "var(--sage)" }}>point</span>
+              inner<span style={{ color: "var(--sage)" }}>ly</span>
             </div>
             <p style={{ fontSize: "14px", maxWidth: "260px" }}>
               Holistic wellbeing, mindset and coaching — built to be returned to
@@ -62,7 +62,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 Stillpoint. All rights reserved.</span>
+          <span>© 2026 Innerly. All rights reserved.</span>
           <span>
             Built for a daily practice. · <a href="/admin">Studio</a>
           </span>

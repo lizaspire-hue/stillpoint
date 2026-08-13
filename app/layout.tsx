@@ -24,7 +24,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Stillpoint — Holistic Wellbeing",
+  title: "Innerly — Holistic Wellbeing",
   description:
     "Meditation, sound healing, movement and mindset work in one place — a library to return to daily, and a coach in your corner when you need one.",
   keywords: [

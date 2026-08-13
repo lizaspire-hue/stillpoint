@@ -20,7 +20,7 @@ export function SiteHeader() {
     <header>
       <nav className="nav">
         <a href="#top" className="logo">
-          still<span>point</span>
+          inner<span>ly</span>
         </a>
         <ul className={`nav-links${open ? " open" : ""}`}>
           {NAV_LINKS.map((link) => (

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stillpoint — Holistic Wellbeing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   STILLPOINT — design tokens
+   Rename the brand: search/replace "Stillpoint" throughout.
+   All colour + type decisions live here. Change these six
+   variables and the whole site restyles.
+   ============================================================ */
+:root{
+  --ink:        #16211B;   /* deep forest-black, hero + dark bands   */
+  --ink-soft:   #1F2E25;   /* slightly lifted panel on dark bands    */
+  --sand:       #F3ECDF;   /* warm sand, light section backgrounds   */
+  --cream:      #FBF7EE;   /* card surface on light bands            */
+  --sage:       #8FA37E;   /* primary accent — growth, breath        */
+  --clay:       #C97B5E;   /* warm accent — CTAs, warmth              */
+  --dusk:       #6B6584;   /* secondary accent — oracle/moon moments */
+
+  --text-on-dark:   #F3ECDF;
+  --text-on-dark-muted: #B9C2B4;
+  --text-on-light:  #1F2A22;
+  --text-on-light-muted: #5B655C;
+
+  --display: "Fraunces", Georgia, serif;
+  --body:    "Inter", -apple-system, sans-serif;
+  --mono:    "IBM Plex Mono", monospace;
+
+  --radius: 4px;
+  --max: 1160px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family: var(--body);
+  color: var(--text-on-light);
+  background: var(--sand);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; }
+.wrap{ max-width: var(--max); margin:0 auto; padding:0 32px; }
+section{ padding: 108px 0; }
+@media (max-width: 720px){
+  section{ padding: 72px 0; }
+  .wrap{ padding: 0 20px; }
+}
+
+/* ---------- type ---------- */
+.eyebrow{
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display:flex; align-items:center; gap:10px;
+  margin-bottom: 18px;
+}
+.eyebrow::before{ content:""; width:22px; height:1px; background: currentColor; }
+h1,h2,h3{ font-family: var(--display); font-weight:500; letter-spacing:-0.01em; }
+h1{ font-size: clamp(40px, 6vw, 74px); line-height:1.02; font-weight:400; }
+h2{ font-size: clamp(30px, 4vw, 44px); line-height:1.08; }
+h3{ font-size: 21px; line-height:1.25; }
+.section-head{ max-width: 640px; margin-bottom: 56px; }
+.section-head p{ color: var(--text-on-light-muted); font-size:17px; margin-top:14px; }
+.dark .section-head p{ color: var(--text-on-dark-muted); }
+.lede{ font-size:19px; max-width: 560px; color: var(--text-on-light-muted); }
+
+/* ---------- signature waveform pulse ---------- */
+.pulse-divider{ width:100%; height:56px; overflow:hidden; }
+.pulse-divider svg{ width:100%; height:100%; display:block; }
+.pulse-line{
+  fill:none; stroke: var(--sage); stroke-width:1.4;
+  stroke-dasharray: 1400; stroke-dashoffset:1400;
+  animation: draw-pulse 3.2s ease-out forwards, drift 9s ease-in-out infinite 3.2s;
+}
+@keyframes draw-pulse{ to{ stroke-dashoffset:0; } }
+@keyframes drift{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-3px);} }
+@media (prefers-reduced-motion: reduce){
+  .pulse-line{ animation:none; stroke-dashoffset:0; }
+}
+
+/* ---------- nav ---------- */
+header{
+  position: sticky; top:0; z-index: 50;
+  background: rgba(22,33,27,0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(243,236,223,0.08);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; padding:20px 32px; max-width: var(--max); margin:0 auto; }
+.logo{ font-family: var(--display); font-size:21px; color: var(--text-on-dark); letter-spacing:0.01em; text-decoration:none; }
+.logo span{ color: var(--sage); }
+.nav-links{ display:flex; gap:28px; list-style:none; }
+.nav-links a{
+  font-family: var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase;
+  color: var(--text-on-dark-muted); text-decoration:none; transition: color .2s;
+}
+.nav-links a:hover{ color: var(--text-on-dark); }
+.nav-cta{
+  font-family: var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase;
+  color: var(--ink); background: var(--sand); padding:10px 18px; border-radius: var(--radius);
+  text-decoration:none; white-space:nowrap;
+}
+.nav-toggle{ display:none; background:none; border:none; color:var(--text-on-dark); font-size:24px; cursor:pointer; }
+@media (max-width: 880px){
+  .nav-links{ display:none; }
+  .nav-toggle{ display:block; }
+  .nav-links.open{
+    display:flex; flex-direction:column; position:absolute; top:100%; left:0; right:0;
+    background: var(--ink); padding:20px 32px; gap:16px; border-bottom:1px solid rgba(243,236,223,0.08);
+  }
+}
+
+/* ---------- hero ---------- */
+.hero{
+  background: var(--ink); color: var(--text-on-dark);
+  padding: 120px 0 96px; position:relative; overflow:hidden;
+}
+.hero .wrap{ position:relative; z-index:2; }
+.hero h1{ color: var(--text-on-dark); max-width:820px; }
+.hero h1 em{ font-style:italic; color: var(--sage); }
+.hero .lede{ color: var(--text-on-dark-muted); margin:26px 0 40px; }
+.hero-actions{ display:flex; gap:16px; flex-wrap:wrap; }
+.btn{
+  font-family: var(--mono); font-size:13px; letter-spacing:0.05em; text-transform:uppercase;
+  padding:15px 28px; border-radius: var(--radius); text-decoration:none; display:inline-block;
+  border:1px solid transparent; transition: transform .15s ease, background .2s;
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn-primary{ background: var(--clay); color: var(--ink); }
+.btn-primary:hover{ background:#DA8E70; }
+.btn-ghost{ border-color: rgba(243,236,223,0.35); color: var(--text-on-dark); }
+.btn-ghost:hover{ border-color: var(--text-on-dark); }
+.hero-wave{ position:absolute; bottom:0; left:0; right:0; opacity:0.5; }
+
+/* ---------- about / bio ---------- */
+.about{ background: var(--sand); }
+.about-grid{ display:grid; grid-template-columns: 0.85fr 1.15fr; gap:64px; align-items:start; }
+.about-portrait{
+  aspect-ratio: 4/5; background: linear-gradient(160deg, var(--sage), var(--dusk));
+  border-radius: var(--radius); display:flex; align-items:flex-end; padding:24px;
+}
+.about-portrait span{ font-family:var(--mono); font-size:12px; color:rgba(243,236,223,0.85); }
+.about-copy p{ margin-bottom:18px; color: var(--text-on-light-muted); font-size:16px; }
+.about-copy strong{ color: var(--text-on-light); font-weight:600; }
+.pillars{ display:grid; grid-template-columns: repeat(3,1fr); gap:24px; margin-top:36px; }
+.pillar{ border-top:1px solid rgba(31,42,34,0.15); padding-top:16px; }
+.pillar .eyebrow{ color: var(--dusk); margin-bottom:10px; }
+.pillar p{ font-size:14px; color: var(--text-on-light-muted); }
+@media (max-width: 880px){ .about-grid{ grid-template-columns:1fr; } .pillars{ grid-template-columns:1fr; } }
+
+/* ---------- library grid (reused for meditation / yoga / music / movement) ---------- */
+.filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+.chip{
+  font-family:var(--mono); font-size:12px; letter-spacing:0.04em; text-transform:uppercase;
+  padding:9px 16px; border-radius: 999px; border:1px solid rgba(31,42,34,0.2);
+  background:transparent; cursor:pointer; color: var(--text-on-light-muted); transition:.2s;
+}
+.dark .chip{ border-color: rgba(243,236,223,0.25); color: var(--text-on-dark-muted); }
+.chip.active{ background: var(--sage); border-color: var(--sage); color: var(--ink); }
+.grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; }
+@media (max-width: 940px){ .grid{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 620px){ .grid{ grid-template-columns: 1fr; } }
+.card{
+  background: var(--cream); border-radius: var(--radius); overflow:hidden;
+  border:1px solid rgba(31,42,34,0.08); transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{ transform: translateY(-3px); }
+.card-media{
+  aspect-ratio:16/10; background: linear-gradient(135deg, var(--sage), var(--ink-soft));
+  position:relative; display:flex; align-items:center; justify-content:center;
+}
+.card-media .play{
+  width:46px; height:46px; border-radius:50%; background:rgba(251,247,238,0.92);
+  display:flex; align-items:center; justify-content:center; color:var(--ink); font-size:14px;
+}
+.card-duration{
+  position:absolute; bottom:10px; right:10px; font-family:var(--mono); font-size:11px;
+  background:rgba(22,33,27,0.75); color:var(--sand); padding:3px 8px; border-radius:3px;
+}
+.card-body{ padding:20px; }
+.card-tag{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--dusk); margin-bottom:8px; display:block; }
+.card-body h3{ margin-bottom:6px; }
+.card-body p{ font-size:14px; color: var(--text-on-light-muted); }
+.library-note{
+  margin-top:40px; font-family:var(--mono); font-size:13px; color: var(--text-on-light-muted);
+  border-left:2px solid var(--sage); padding-left:16px;
+}
+.dark .library-note{ color: var(--text-on-dark-muted); }
+
+/* ---------- daily card / affirmation ---------- */
+.daily{ background: var(--ink); color: var(--text-on-dark); }
+.daily-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:64px; align-items:center; }
+.oracle{
+  perspective: 1200px; width:100%; max-width:320px; aspect-ratio:2/3; margin:0 auto; cursor:pointer;
+}
+.oracle-inner{
+  position:relative; width:100%; height:100%; transition: transform .7s cubic-bezier(.4,.2,.2,1);
+  transform-style: preserve-3d;
+}
+.oracle.flipped .oracle-inner{ transform: rotateY(180deg); }
+.oracle-face{
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:8px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:28px;
+  border:1px solid rgba(243,236,223,0.2);
+}
+.oracle-front{ background: linear-gradient(160deg, var(--dusk), var(--ink-soft)); }
+.oracle-front .glyph{ font-size:40px; margin-bottom:16px; opacity:0.85; }
+.oracle-front span{ font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color: var(--text-on-dark-muted); }
+.oracle-back{ background: var(--cream); color: var(--text-on-light); transform: rotateY(180deg); }
+.oracle-back h3{ margin-bottom:12px; }
+.oracle-back p{ font-size:14px; color: var(--text-on-light-muted); }
+.daily-copy .eyebrow{ color: var(--sage); }
+.affirmation-box{
+  margin-top:28px; background: var(--ink-soft); border-radius: var(--radius); padding:24px;
+  border-left:2px solid var(--clay);
+}
+.affirmation-box p{ font-family: var(--display); font-size:20px; font-style:italic; color: var(--text-on-dark); }
+.small-link{ font-family:var(--mono); font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:var(--sage); text-decoration:none; display:inline-block; margin-top:18px; }
+@media (max-width: 880px){ .daily-grid{ grid-template-columns:1fr; } }
+
+/* ---------- sound frequency library ---------- */
+.frequencies{ background: var(--sand); }
+.freq-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; }
+@media (max-width: 880px){ .freq-grid{ grid-template-columns: repeat(2,1fr); } }
+.freq-card{
+  background: var(--cream); border-radius: var(--radius); padding:22px; border:1px solid rgba(31,42,34,0.08);
+  text-align:center;
+}
+.freq-hz{ font-family:var(--mono); font-size:28px; color: var(--dusk); }
+.freq-hz span{ font-size:13px; color: var(--text-on-light-muted); }
+.freq-card h3{ font-size:15px; margin:10px 0 6px; }
+.freq-card p{ font-size:13px; color: var(--text-on-light-muted); }
+
+/* ---------- reminders / goal setting ---------- */
+.reminders{ background: var(--ink); color: var(--text-on-dark); }
+.reminders-panel{
+  background: var(--ink-soft); border-radius: var(--radius); padding:40px; max-width:760px; margin:0 auto;
+  border:1px solid rgba(243,236,223,0.1);
+}
+.reminders-form{ display:flex; gap:10px; margin-bottom:24px; }
+.reminders-form input{
+  flex:1; background: var(--ink); border:1px solid rgba(243,236,223,0.2); color: var(--text-on-dark);
+  padding:14px 16px; border-radius: var(--radius); font-family:var(--body); font-size:15px;
+}
+.reminders-form input:focus{ outline:none; border-color: var(--sage); }
+.reminders-form button{
+  font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em;
+  background:var(--sage); color:var(--ink); border:none; padding:0 22px; border-radius: var(--radius); cursor:pointer;
+}
+.reminders-list{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+.reminders-list li{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  background: var(--ink); padding:14px 16px; border-radius: var(--radius); font-size:15px;
+  border-left:2px solid var(--clay);
+}
+.reminders-list button{ background:none; border:none; color: var(--text-on-dark-muted); cursor:pointer; font-size:13px; font-family:var(--mono); }
+.reminders-list button:hover{ color: var(--clay); }
+.reminders-empty{ color: var(--text-on-dark-muted); font-size:14px; font-style:italic; }
+.reminders-note{ margin-top:22px; font-family:var(--mono); font-size:12px; color: var(--text-on-dark-muted); }
+
+/* ---------- nutrition ---------- */
+.nutrition{ background: var(--sand); }
+.nutrition-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:24px; }
+@media (max-width: 880px){ .nutrition-grid{ grid-template-columns:1fr; } }
+.nutri-card{ background: var(--cream); border-radius: var(--radius); padding:28px; border:1px solid rgba(31,42,34,0.08); }
+.nutri-card .eyebrow{ color:var(--clay); }
+.nutri-card p{ font-size:14px; color: var(--text-on-light-muted); }
+
+/* ---------- booking ---------- */
+.booking{ background: var(--clay); color: var(--ink); }
+.booking-grid{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:center; }
+.booking h2{ color: var(--ink); }
+.booking p.lede{ color: rgba(22,33,27,0.75); }
+.booking-panel{ background: var(--ink); color: var(--text-on-dark); border-radius: var(--radius); padding:32px; }
+.booking-panel h3{ color: var(--text-on-dark); margin-bottom:6px; }
+.booking-panel p{ color: var(--text-on-dark-muted); font-size:14px; margin-bottom:22px; }
+.booking-slots{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.booking-slots div{
+  display:flex; justify-content:space-between; font-family:var(--mono); font-size:13px;
+  border-bottom:1px solid rgba(243,236,223,0.12); padding-bottom:10px; color: var(--text-on-dark-muted);
+}
+.booking-panel .btn-primary{ width:100%; text-align:center; background: var(--sage); color: var(--ink); }
+@media (max-width: 880px){ .booking-grid{ grid-template-columns:1fr; } }
+
+/* ---------- footer ---------- */
+footer{ background: var(--ink); color: var(--text-on-dark-muted); padding:64px 0 40px; }
+.footer-grid{ display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; }
+.footer-grid h4{ font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color: var(--text-on-dark); margin-bottom:16px; }
+.footer-grid ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-grid a{ text-decoration:none; color: var(--text-on-dark-muted); font-size:14px; }
+.footer-grid a:hover{ color: var(--text-on-dark); }
+.footer-logo{ font-family:var(--display); font-size:22px; color: var(--text-on-dark); margin-bottom:14px; }
+.footer-bottom{ border-top:1px solid rgba(243,236,223,0.1); padding-top:24px; display:flex; justify-content:space-between; font-size:12px; font-family:var(--mono); flex-wrap:wrap; gap:10px; }
+@media (max-width: 880px){ .footer-grid{ grid-template-columns: 1fr 1fr; } }
+
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="logo">still<span>point</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#meditation">Meditation</a></li>
+      <li><a href="#daily">Daily card</a></li>
+      <li><a href="#yoga">Yoga</a></li>
+      <li><a href="#sound">Sound</a></li>
+      <li><a href="#music">Music</a></li>
+      <li><a href="#movement">Movement</a></li>
+      <li><a href="#nutrition">Nutrition</a></li>
+      <li><a href="#reminders">Reminders</a></li>
+    </ul>
+    <a href="#booking" class="nav-cta">Book a call</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Holistic health &amp; wellbeing</p>
+    <h1>A quieter kind of <em>strength</em>, built from the inside out.</h1>
+    <p class="lede">Meditation, sound healing, movement and mindset work in one place — a library to return to daily, and a coach in your corner when you need one.</p>
+    <div class="hero-actions">
+      <a href="#meditation" class="btn btn-primary">Explore the library</a>
+      <a href="#booking" class="btn btn-ghost">Book a 1:1 call</a>
+    </div>
+  </div>
+  <div class="hero-wave pulse-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path class="pulse-line" d="M0,30 L120,30 L145,8 L170,52 L195,30 L340,30 L365,14 L390,46 L415,30 L600,30 L625,4 L650,56 L675,30 L860,30 L885,12 L910,48 L935,30 L1200,30" />
+    </svg>
+  </div>
+</section>
+
+<!-- ================= ABOUT / BIO ================= -->
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-portrait" role="img" aria-label="Portrait placeholder">
+      <span>[ your portrait here ]</span>
+    </div>
+    <div class="about-copy">
+      <p class="eyebrow">Why mindset comes first</p>
+      <h2>Holistic wellbeing isn't a mood. It's an infrastructure.</h2>
+      <p>Twenty years of coaching has taught me the same lesson from every angle: the body will only carry what the mind believes it can. <strong>Strength training without nervous-system regulation burns people out. Nutrition without self-worth becomes another rule to fail at.</strong> Real change happens when mindset, movement and rest are trained together, not treated as separate projects.</p>
+      <p>This platform holds the practices I use with clients every week — meditation, sound, gentle yoga, affirmation and honest nutrition guidance — so you can build a daily relationship with your own regulation, not just book a session and hope it sticks.</p>
+      <a href="#booking" class="small-link">Work with me directly →</a>
+      <div class="pillars">
+        <div class="pillar"><p class="eyebrow">Regulate</p><p>Nervous-system-first practices before anything physical.</p></div>
+        <div class="pillar"><p class="eyebrow">Rebuild</p><p>Strength and movement that respects where you are today.</p></div>
+        <div class="pillar"><p class="eyebrow">Return</p><p>Small daily rituals that outlast any single session.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="pulse-divider" aria-hidden="true">
+  <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+    <path class="pulse-line" style="stroke:var(--dusk)" d="M0,28 L200,28 L225,6 L250,50 L275,28 L500,28 L525,10 L550,46 L575,28 L800,28 L825,4 L850,52 L875,28 L1200,28" />
+  </svg>
+</div>
+
+<!-- ================= MEDITATION LIBRARY ================= -->
+<section id="meditation">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Library</p>
+      <h2>Meditation &amp; guided recordings</h2>
+      <p>Short and long-form sessions for sleep, anxiety, focus and morning grounding. Filter by what you need today.</p>
+    </div>
+    <div class="filters" id="medFilters">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="sleep">Sleep</button>
+      <button class="chip" data-filter="anxiety">Anxiety</button>
+      <button class="chip" data-filter="focus">Focus</button>
+      <button class="chip" data-filter="morning">Morning</button>
+    </div>
+    <div class="grid" id="medGrid">
+      <!-- cards injected by JS from medItems -->
+    </div>
+    <p class="library-note">Video/audio library pattern — this same card + filter structure is reused for Yoga, Sound, Music and Movement below. Duplicate the grid, swap the data array, and you have a new library section.</p>
+  </div>
+</section>
+
+<!-- ================= DAILY CARD + AFFIRMATION ================= -->
+<section class="daily dark" id="daily">
+  <div class="wrap daily-grid">
+    <div class="oracle" id="oracle" role="button" tabindex="0" aria-label="Tap to draw today's card">
+      <div class="oracle-inner">
+        <div class="oracle-face oracle-front">
+          <div class="glyph">◐</div>
+          <span>Tap to draw today's card</span>
+        </div>
+        <div class="oracle-face oracle-back">
+          <h3 id="cardTitle">The Well</h3>
+          <p id="cardMeaning">You have more resourced than you think. Draw from what's already yours before reaching outward.</p>
+        </div>
+      </div>
+    </div>
+    <div class="daily-copy">
+      <p class="eyebrow">Daily ritual</p>
+      <h2>Your card &amp; affirmation of the day</h2>
+      <p class="lede" style="color:var(--text-on-dark-muted)">A one-minute practice to open your day with intention — draw a card, sit with the affirmation, carry it with you.</p>
+      <div class="affirmation-box">
+        <p id="affirmationText">"I am not behind. I am exactly where my body and mind needed me to arrive."</p>
+      </div>
+      <a href="#" class="small-link" id="newAffirmation">Draw a new affirmation →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= YOGA ================= -->
+<section id="yoga">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Library</p>
+      <h2>Yoga — yin &amp; soft flow</h2>
+      <p>Slow, tissue-deep yin holds and gentle vinyasa flows. Nothing punishing — everything restorative.</p>
+    </div>
+    <div class="filters" id="yogaFilters">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="yin">Yin</button>
+      <button class="chip" data-filter="flow">Soft flow</button>
+      <button class="chip" data-filter="restorative">Restorative</button>
+    </div>
+    <div class="grid" id="yogaGrid"></div>
+  </div>
+</section>
+
+<!-- ================= SOUND FREQUENCY LIBRARY ================= -->
+<section class="frequencies" id="sound">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Library</p>
+      <h2>Sound frequency library</h2>
+      <p>Solfeggio and healing frequencies for regulation, release and manifestation work. Headphones recommended.</p>
+    </div>
+    <div class="freq-grid" id="freqGrid"></div>
+  </div>
+</section>
+
+<!-- ================= MUSIC LIBRARY ================= -->
+<section id="music">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Library</p>
+      <h2>Grounding &amp; motivational music</h2>
+      <p>Drumming, rhythm and low-fi motivational tracks for grounding, walking and pre-training focus.</p>
+    </div>
+    <div class="grid" id="musicGrid"></div>
+  </div>
+</section>
+
+<div class="pulse-divider" aria-hidden="true">
+  <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+    <path class="pulse-line" style="stroke:var(--clay)" d="M0,28 L160,28 L185,10 L210,46 L235,28 L460,28 L485,4 L510,52 L535,28 L760,28 L785,14 L810,42 L835,28 L1200,28" />
+  </svg>
+</div>
+
+<!-- ================= MOVEMENT / STRENGTH ================= -->
+<section id="movement">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Library</p>
+      <h2>Strength &amp; small movement</h2>
+      <p>Full strength sessions and short mobility snacks — pick your window, from 5 minutes to 45.</p>
+    </div>
+    <div class="filters" id="moveFilters">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="strength">Strength</button>
+      <button class="chip" data-filter="mobility">Small movement</button>
+      <button class="chip" data-filter="rehab">Rehab-friendly</button>
+    </div>
+    <div class="grid" id="moveGrid"></div>
+  </div>
+</section>
+
+<!-- ================= NUTRITION ================= -->
+<section class="nutrition" id="nutrition">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Guidance</p>
+      <h2>Nutrition, without the noise</h2>
+      <p>No fads, no restriction culture — practical guidance built around how you actually train and live.</p>
+    </div>
+    <div class="nutrition-grid">
+      <div class="nutri-card">
+        <p class="eyebrow">Fuel for training</p>
+        <h3>Eating around your sessions</h3>
+        <p>How to fuel strength and movement work without over-thinking every meal — pre- and post-session basics that actually stick.</p>
+      </div>
+      <div class="nutri-card">
+        <p class="eyebrow">Foundations</p>
+        <h3>Building a sustainable plate</h3>
+        <p>A simple, repeatable framework for balanced meals — protein, fibre and colour, adaptable to any diet or budget.</p>
+      </div>
+      <div class="nutri-card">
+        <p class="eyebrow">1:1 guidance</p>
+        <h3>Personalised support</h3>
+        <p>For anything beyond the general library — book a 1:1 to talk through your own goals, history and relationship with food.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PERSONAL REMINDERS ================= -->
+<section class="reminders dark" id="reminders">
+  <div class="wrap">
+    <div class="section-head" style="margin:0 auto 48px; text-align:center;">
+      <p class="eyebrow" style="justify-content:center">Your space</p>
+      <h2>Your affirmations &amp; goal reminders</h2>
+      <p>Write the words you want to come back to. They'll sit here, ready whenever you need them.</p>
+    </div>
+    <div class="reminders-panel">
+      <form class="reminders-form" id="reminderForm">
+        <input type="text" id="reminderInput" placeholder="e.g. I train for the woman I'm becoming, not the one I was" maxlength="140" />
+        <button type="submit">Add</button>
+      </form>
+      <ul class="reminders-list" id="reminderList"></ul>
+      <p class="reminders-note">Demo only — entries live in this browser session and clear on refresh. In production, wire this form to your backend/database so each logged-in member's reminders persist and sync across devices.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BOOKING ================= -->
+<section class="booking" id="booking">
+  <div class="wrap booking-grid">
+    <div>
+      <p class="eyebrow" style="color: rgba(22,33,27,0.6)">Work with me</p>
+      <h2>Book a 1:1 coaching call</h2>
+      <p class="lede">Thirty minutes, one to one, to talk through where you are and build a plan that actually fits your life — training, mindset, nutrition or all three.</p>
+      <a href="#" class="btn" style="background:var(--ink); color:var(--sand); margin-top:28px;">See all available times →</a>
+    </div>
+    <div class="booking-panel">
+      <h3>Next available</h3>
+      <p>All calls held over video, 30 minutes.</p>
+      <div class="booking-slots">
+        <div><span>Tue 18 Aug</span><span>10:00</span></div>
+        <div><span>Wed 19 Aug</span><span>14:30</span></div>
+        <div><span>Fri 21 Aug</span><span>09:00</span></div>
+      </div>
+      <a href="#" class="btn btn-primary">Book this call</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">still<span style="color:var(--sage)">point</span></div>
+        <p style="font-size:14px; max-width:260px;">Holistic wellbeing, mindset and coaching — built to be returned to daily.</p>
+      </div>
+      <div>
+        <h4>Library</h4>
+        <ul>
+          <li><a href="#meditation">Meditation</a></li>
+          <li><a href="#yoga">Yoga</a></li>
+          <li><a href="#sound">Sound</a></li>
+          <li><a href="#music">Music</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="#movement">Movement</a></li>
+          <li><a href="#nutrition">Nutrition</a></li>
+          <li><a href="#reminders">Reminders</a></li>
+          <li><a href="#daily">Daily card</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#booking">Book a call</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Stillpoint. All rights reserved.</span>
+      <span>Built for a daily practice.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Mobile nav toggle
+   ============================================================ */
+document.getElementById('navToggle').addEventListener('click', function(){
+  document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(function(a){
+  a.addEventListener('click', function(){ document.getElementById('navLinks').classList.remove('open'); });
+});
+
+/* ============================================================
+   Reusable library renderer
+   Replace/extend these data arrays with your real content —
+   title, tag (used for filtering + shown as the small label),
+   duration and description. gradientStart/End tint the media
+   placeholder; drop in a real thumbnail/video poster instead.
+   ============================================================ */
+function renderLibrary(gridId, items){
+  var grid = document.getElementById(gridId);
+  grid.innerHTML = items.map(function(item){
+    return '<div class="card" data-cat="'+item.cat+'">' +
+      '<div class="card-media">' +
+        '<div class="play">&#9658;</div>' +
+        '<span class="card-duration">'+item.duration+'</span>' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<span class="card-tag">'+item.tag+'</span>' +
+        '<h3>'+item.title+'</h3>' +
+        '<p>'+item.desc+'</p>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function wireFilters(filterContainerId, gridId){
+  var container = document.getElementById(filterContainerId);
+  if(!container) return;
+  container.addEventListener('click', function(e){
+    if(!e.target.classList.contains('chip')) return;
+    container.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+    e.target.classList.add('active');
+    var filter = e.target.getAttribute('data-filter');
+    document.querySelectorAll('#'+gridId+' .card').forEach(function(card){
+      var show = filter === 'all' || card.getAttribute('data-cat') === filter;
+      card.style.display = show ? '' : 'none';
+    });
+  });
+}
+
+/* ---- Meditation ---- */
+var medItems = [
+  { title:"Deep Sleep Wind-Down", tag:"Sleep", cat:"sleep", duration:"22 min", desc:"A body-scan led descent into sleep, for restless nights." },
+  { title:"Calming the Anxious Mind", tag:"Anxiety", cat:"anxiety", duration:"12 min", desc:"Breath-led regulation for when your thoughts are moving faster than you are." },
+  { title:"Morning Clarity", tag:"Morning", cat:"morning", duration:"8 min", desc:"A short grounding practice to open the day with intention." },
+  { title:"Focus Before Work", tag:"Focus", cat:"focus", duration:"10 min", desc:"Settle a scattered mind before a big task or meeting." },
+  { title:"Releasing the Day", tag:"Sleep", cat:"sleep", duration:"18 min", desc:"Unwind the nervous system before bed." },
+  { title:"Steady in Uncertainty", tag:"Anxiety", cat:"anxiety", duration:"15 min", desc:"For the moments that feel bigger than you can hold alone." }
+];
+renderLibrary('medGrid', medItems);
+wireFilters('medFilters', 'medGrid');
+
+/* ---- Yoga ---- */
+var yogaItems = [
+  { title:"Yin for Tight Hips", tag:"Yin", cat:"yin", duration:"35 min", desc:"Long, passive holds to release deep connective tissue." },
+  { title:"Soft Flow — Full Body", tag:"Soft flow", cat:"flow", duration:"28 min", desc:"A gentle, breath-led sequence to move the whole body." },
+  { title:"Restorative Evening Wind-Down", tag:"Restorative", cat:"restorative", duration:"20 min", desc:"Supported poses to shift out of a busy day." },
+  { title:"Yin for the Spine", tag:"Yin", cat:"yin", duration:"30 min", desc:"Gentle spinal release for desk-heavy days." },
+  { title:"Slow Sun Salutations", tag:"Soft flow", cat:"flow", duration:"18 min", desc:"A softened take on the classic sequence." },
+  { title:"Rest & Restore", tag:"Restorative", cat:"restorative", duration:"25 min", desc:"Deeply supported, prop-led recovery practice." }
+];
+renderLibrary('yogaGrid', yogaItems);
+wireFilters('yogaFilters', 'yogaGrid');
+
+/* ---- Music (drumming / grounding) ---- */
+var musicItems = [
+  { title:"Heartbeat Drumming", tag:"Drumming", cat:"drumming", duration:"14 min", desc:"Steady, low drumming for grounding and presence." },
+  { title:"Earth Rhythm", tag:"Grounding", cat:"grounding", duration:"20 min", desc:"Layered percussion for walking or seated grounding." },
+  { title:"Rise Playlist", tag:"Motivational", cat:"motivational", duration:"45 min", desc:"A build of low-fi motivational tracks for training days." },
+  { title:"Shamanic Drum Journey", tag:"Drumming", cat:"drumming", duration:"25 min", desc:"A longer drumming journey for deeper meditative states." }
+];
+renderLibrary('musicGrid', musicItems);
+
+/* ---- Movement / strength ---- */
+var moveItems = [
+  { title:"Full Body Strength — 40 min", tag:"Strength", cat:"strength", duration:"40 min", desc:"A complete strength session, minimal equipment." },
+  { title:"5-Minute Mobility Snack", tag:"Small movement", cat:"mobility", duration:"5 min", desc:"A quick reset for stiff shoulders and hips at your desk." },
+  { title:"Rehab-Friendly Lower Body", tag:"Rehab-friendly", cat:"rehab", duration:"22 min", desc:"Low-impact strength work, built for returning from injury." },
+  { title:"Strength for Beginners", tag:"Strength", cat:"strength", duration:"30 min", desc:"A confident starting point if you're new to training." },
+  { title:"10-Minute Morning Mobility", tag:"Small movement", cat:"mobility", duration:"10 min", desc:"Wake the body up gently before the day begins." },
+  { title:"Postnatal-Friendly Strength", tag:"Rehab-friendly", cat:"rehab", duration:"25 min", desc:"Rebuilding strength with care, at your own pace." }
+];
+renderLibrary('moveGrid', moveItems);
+wireFilters('moveFilters', 'moveGrid');
+
+/* ============================================================
+   Sound frequency library — static data, no filtering needed
+   ============================================================ */
+var freqItems = [
+  { hz:"396", name:"Liberating Guilt", desc:"Releasing fear and guilt, grounding the root." },
+  { hz:"432", name:"Natural Tuning", desc:"A calming, harmonic alternative to standard pitch." },
+  { hz:"528", name:"Transformation", desc:"Associated with repair, clarity and manifestation." },
+  { hz:"639", name:"Connection", desc:"Supports relationships and open communication." },
+  { hz:"741", name:"Intuition", desc:"Clears mental clutter, sharpens problem-solving." },
+  { hz:"852", name:"Spiritual Order", desc:"Quietens the mind, opens inner awareness." },
+  { hz:"963", name:"Higher Awareness", desc:"Deep stillness, associated with insight." },
+  { hz:"174", name:"Pain Relief", desc:"A low, grounding tone for physical tension." }
+];
+document.getElementById('freqGrid').innerHTML = freqItems.map(function(f){
+  return '<div class="freq-card">' +
+    '<div class="freq-hz">'+f.hz+' <span>Hz</span></div>' +
+    '<h3>'+f.name+'</h3>' +
+    '<p>'+f.desc+'</p>' +
+  '</div>';
+}).join('');
+
+/* ============================================================
+   Daily oracle card + affirmation
+   ============================================================ */
+var oracleCards = [
+  { title:"The Well", meaning:"You have more resourced than you think. Draw from what's already yours before reaching outward." },
+  { title:"The Open Door", meaning:"Something is asking for your yes. Notice where you've been hesitating out of habit, not truth." },
+  { title:"Roots", meaning:"Slow down before you scale up. What you build now needs a steady base." },
+  { title:"The Tide", meaning:"Energy moves in cycles, not straight lines. Rest is part of the momentum, not a break from it." },
+  { title:"The Mirror", meaning:"What you're noticing in others may be worth turning back toward yourself, gently." },
+  { title:"The Ember", meaning:"You don't need a blaze today. Tend the small, steady thing that's already alight." }
+];
+var affirmations = [
+  "I am not behind. I am exactly where my body and mind needed me to arrive.",
+  "Strength is something I return to, not something I have to prove today.",
+  "I trust the pace my nervous system is asking for.",
+  "I am allowed to want more, and to rest while I build it.",
+  "My worth was never up for negotiation.",
+  "Today I choose one small, honest action over a perfect plan."
+];
+
+var oracle = document.getElementById('oracle');
+var cardTitleEl = document.getElementById('cardTitle');
+var cardMeaningEl = document.getElementById('cardMeaning');
+
+function drawCard(){
+  var pick = oracleCards[Math.floor(Math.random() * oracleCards.length)];
+  cardTitleEl.textContent = pick.title;
+  cardMeaningEl.textContent = pick.meaning;
+}
+
+oracle.addEventListener('click', function(){
+  if(!oracle.classList.contains('flipped')){ drawCard(); }
+  oracle.classList.toggle('flipped');
+});
+oracle.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); oracle.click(); }
+});
+
+document.getElementById('newAffirmation').addEventListener('click', function(e){
+  e.preventDefault();
+  var pick = affirmations[Math.floor(Math.random() * affirmations.length)];
+  document.getElementById('affirmationText').textContent = '"' + pick + '"';
+});
+
+/* ============================================================
+   Personal reminders — session-only in-memory list.
+   No localStorage/sessionStorage used (browser storage isn't
+   reliable in every embed context) — swap this for a real
+   backend call (POST /reminders, GET /reminders per user) when
+   you wire up accounts.
+   ============================================================ */
+var reminders = [
+  "I train for the woman I'm becoming, not the one I was.",
+  "Rest is productive."
+];
+
+function renderReminders(){
+  var list = document.getElementById('reminderList');
+  if(reminders.length === 0){
+    list.innerHTML = '<li class="reminders-empty">No reminders yet — add the first one above.</li>';
+    return;
+  }
+  list.innerHTML = reminders.map(function(text, i){
+    return '<li><span>'+text+'</span><button data-i="'+i+'" aria-label="Remove reminder">Remove</button></li>';
+  }).join('');
+}
+renderReminders();
+
+document.getElementById('reminderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var input = document.getElementById('reminderInput');
+  var value = input.value.trim();
+  if(!value) return;
+  reminders.push(value);
+  input.value = '';
+  renderReminders();
+});
+
+document.getElementById('reminderList').addEventListener('click', function(e){
+  if(e.target.tagName !== 'BUTTON') return;
+  var i = parseInt(e.target.getAttribute('data-i'), 10);
+  reminders.splice(i, 1);
+  renderReminders();
+});
+</script>
+</body>
+</html>

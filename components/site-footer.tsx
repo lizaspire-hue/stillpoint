@@ -63,7 +63,9 @@ export function SiteFooter() {
         </div>
         <div className="footer-bottom">
           <span>© 2026 Stillpoint. All rights reserved.</span>
-          <span>Built for a daily practice.</span>
+          <span>
+            Built for a daily practice. · <a href="/admin">Studio</a>
+          </span>
         </div>
       </div>
     </footer>

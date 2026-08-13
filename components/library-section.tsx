@@ -4,11 +4,37 @@ import { useState } from "react"
 import type { Filter, LibraryItem } from "@/lib/data"
 
 function LibraryCard({ item }: { item: LibraryItem }) {
+  const hasMedia = Boolean(item.mediaUrl)
+
   return (
     <div className="card">
       <div className="card-media">
-        <div className="play">&#9658;</div>
-        <span className="card-duration">{item.duration}</span>
+        {hasMedia && item.mediaType === "video" ? (
+          <video
+            className="card-video"
+            src={item.mediaUrl!}
+            poster={item.thumbnailUrl ?? undefined}
+            controls
+            preload="none"
+          />
+        ) : hasMedia && item.mediaType === "audio" ? (
+          <>
+            {item.thumbnailUrl ? (
+              <img className="card-thumb" src={item.thumbnailUrl || "/placeholder.svg"} alt="" />
+            ) : null}
+            <audio className="card-audio" src={item.mediaUrl!} controls preload="none" />
+            <span className="card-duration">{item.duration}</span>
+          </>
+        ) : (
+          <>
+            {item.thumbnailUrl ? (
+              <img className="card-thumb" src={item.thumbnailUrl || "/placeholder.svg"} alt="" />
+            ) : (
+              <div className="play">&#9658;</div>
+            )}
+            <span className="card-duration">{item.duration}</span>
+          </>
+        )}
       </div>
       <div className="card-body">
         <span className="card-tag">{item.tag}</span>
@@ -69,8 +95,8 @@ export function LibrarySection({
         )}
 
         <div className="grid">
-          {visible.map((item) => (
-            <LibraryCard key={item.title} item={item} />
+          {visible.map((item, i) => (
+            <LibraryCard key={`${item.title}-${i}`} item={item} />
           ))}
         </div>
 

@@ -4,6 +4,9 @@ export type LibraryItem = {
   cat: string
   duration: string
   desc: string
+  mediaUrl?: string | null
+  mediaType?: "video" | "audio" | null
+  thumbnailUrl?: string | null
 }
 
 export type Filter = { label: string; value: string }

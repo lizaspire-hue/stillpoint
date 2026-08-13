@@ -5,8 +5,8 @@
 :root {
   --ink: #16211b; /* deep forest-black, hero + dark bands   */
   --ink-soft: #1f2e25; /* slightly lifted panel on dark bands    */
-  --sand: #f3ecdf; /* warm sand, light section backgrounds   */
-  --cream: #fbf7ee; /* card surface on light bands            */
+  --sand: #faf6ee; /* warm sand, light section backgrounds   */
+  --cream: #fffdf8; /* card surface on light bands            */
   --sage: #8fa37e; /* primary accent — growth, breath        */
   --clay: #c97b5e; /* warm accent — CTAs, warmth              */
   --dusk: #6b6584; /* secondary accent — oracle/moon moments */

@@ -1,17 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import { affirmations, oracleCards } from "@/lib/data"
+import { affirmations, cardGradients, oracleCards } from "@/lib/data"
 
 export function DailyCard() {
   const [flipped, setFlipped] = useState(false)
   const [card, setCard] = useState(oracleCards[0])
+  const [gradient, setGradient] = useState(cardGradients[0])
   const [affirmation, setAffirmation] = useState(affirmations[0])
 
   const toggleOracle = () => {
     setFlipped((prev) => {
       if (!prev) {
         setCard(oracleCards[Math.floor(Math.random() * oracleCards.length)])
+        setGradient(cardGradients[Math.floor(Math.random() * cardGradients.length)])
       }
       return !prev
     })
@@ -44,9 +46,9 @@ export function DailyCard() {
               <div className="glyph">◐</div>
               <span>Tap to draw today&apos;s card</span>
             </div>
-            <div className="oracle-face oracle-back">
-              <h3>{card.title}</h3>
-              <p>{card.meaning}</p>
+            <div className="oracle-face oracle-back" style={{ background: gradient }}>
+              <span className="oracle-eyebrow">Today&apos;s affirmation</span>
+              <p className="oracle-affirmation">{card}</p>
             </div>
           </div>
         </div>

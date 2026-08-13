@@ -77,15 +77,31 @@ export const freqItems: Frequency[] = [
   { hz: "174", name: "Pain Relief", desc: "A low, grounding tone for physical tension." },
 ]
 
-export type OracleCard = { title: string; meaning: string }
+export const oracleCards: string[] = [
+  "I do less and attract more.",
+  "I am committed to bringing forth my greatness.",
+  "I will no longer play small.",
+  "I release what is no longer mine to carry.",
+  "I trust the timing of my own becoming.",
+  "I am worthy of the life I am building.",
+  "I meet this moment with an open, steady heart.",
+  "Abundance flows to me with ease and grace.",
+  "I am allowed to take up space.",
+  "My presence is enough. I have nothing to prove.",
+  "I choose peace over the need to be right.",
+  "Everything I need is already within me.",
+]
 
-export const oracleCards: OracleCard[] = [
-  { title: "The Well", meaning: "You have more resourced than you think. Draw from what's already yours before reaching outward." },
-  { title: "The Open Door", meaning: "Something is asking for your yes. Notice where you've been hesitating out of habit, not truth." },
-  { title: "Roots", meaning: "Slow down before you scale up. What you build now needs a steady base." },
-  { title: "The Tide", meaning: "Energy moves in cycles, not straight lines. Rest is part of the momentum, not a break from it." },
-  { title: "The Mirror", meaning: "What you're noticing in others may be worth turning back toward yourself, gently." },
-  { title: "The Ember", meaning: "You don't need a blaze today. Tend the small, steady thing that's already alight." },
+// Colorful abstract gradient backgrounds, drawn at random with each card.
+export const cardGradients: string[] = [
+  "radial-gradient(120% 120% at 20% 15%, #ff9a8b 0%, #ff6a88 35%, #7b2ff7 100%)",
+  "radial-gradient(120% 120% at 80% 10%, #43e97b 0%, #38f9d7 45%, #2b5876 100%)",
+  "radial-gradient(120% 120% at 10% 80%, #fddb92 0%, #d1913c 40%, #b621fe 100%)",
+  "radial-gradient(120% 120% at 85% 85%, #4facfe 0%, #7367f0 50%, #ce9ffc 100%)",
+  "radial-gradient(120% 120% at 15% 20%, #f78ca0 0%, #f9748f 35%, #fd868c 60%, #9f5afd 100%)",
+  "radial-gradient(120% 120% at 75% 25%, #21d4fd 0%, #2152ff 55%, #b224ef 100%)",
+  "radial-gradient(120% 120% at 25% 90%, #f5576c 0%, #f093fb 45%, #5b247a 100%)",
+  "radial-gradient(120% 120% at 90% 60%, #0ba360 0%, #3cba92 40%, #3a1c71 100%)",
 ]
 
 export const affirmations: string[] = [

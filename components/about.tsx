@@ -4,8 +4,8 @@ export function About() {
       <div className="wrap about-grid">
         <div className="about-portrait">
           <img
-            src="/images/portrait.png"
-            alt="A person seated in quiet meditation in soft natural light"
+            src="/images/spiral.png"
+            alt="Stillpoint emblem — a serene blue and white spiral"
           />
         </div>
         <div className="about-copy">

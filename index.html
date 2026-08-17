@@ -196,6 +196,29 @@ header{
 }
 .dark .library-note{ color: var(--text-on-dark-muted); }
 
+/* ---------- video card + lightbox ---------- */
+.card.has-video{ cursor:pointer; }
+.card-media .card-thumb{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.card-media .play{ position:relative; z-index:2; }
+.card.has-video:hover .play{ background:var(--sand); }
+.video-modal{
+  position:fixed; inset:0; z-index:100; display:none;
+  align-items:center; justify-content:center; padding:24px;
+  background:rgba(22,33,27,0.9); backdrop-filter:blur(4px);
+}
+.video-modal.open{ display:flex; }
+.video-modal-inner{ width:100%; max-width:900px; }
+.video-modal-bar{ display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:14px; }
+.video-modal-bar h3{ color:var(--text-on-dark); font-size:18px; }
+.video-close{
+  background:none; border:1px solid rgba(243,236,223,0.4); color:var(--text-on-dark);
+  font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em;
+  padding:9px 16px; border-radius:var(--radius); cursor:pointer; white-space:nowrap;
+}
+.video-close:hover{ border-color:var(--text-on-dark); }
+.video-frame{ position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden; }
+.video-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+
 /* ---------- daily card / affirmation ---------- */
 .daily{ background: var(--ink); color: var(--text-on-dark); }
 .daily-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:64px; align-items:center; }
@@ -385,7 +408,7 @@ footer{ background: var(--ink); color: var(--text-on-dark-muted); padding:64px 0
     <div class="grid" id="medGrid">
       <!-- cards injected by JS from medItems -->
     </div>
-    <p class="library-note">Video/audio library pattern — this same card + filter structure is reused for Yoga, Sound, Music and Movement below. Duplicate the grid, swap the data array, and you have a new library section.</p>
+    <p class="library-note">To add a video: in the data array for any library (medItems, yogaItems, musicItems, moveItems in the script below), add <code>video:"https://youtu.be/…"</code> to an item — the card becomes clickable and opens the video in a player. Add <code>thumb:"…jpg"</code> for a preview image (YouTube auto-thumbnail: <code>https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg</code>). Works with YouTube and Vimeo links.</p>
   </div>
 </section>
 
@@ -592,6 +615,17 @@ footer{ background: var(--ink); color: var(--text-on-dark-muted); padding:64px 0
   </div>
 </footer>
 
+<!-- ================= VIDEO LIGHTBOX ================= -->
+<div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Video player">
+  <div class="video-modal-inner">
+    <div class="video-modal-bar">
+      <h3 id="videoModalTitle"></h3>
+      <button class="video-close" id="videoClose" aria-label="Close video">Close ✕</button>
+    </div>
+    <div class="video-frame" id="videoFrame"></div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    Mobile nav toggle
@@ -610,11 +644,16 @@ document.querySelectorAll('.nav-links a').forEach(function(a){
    duration and description. gradientStart/End tint the media
    placeholder; drop in a real thumbnail/video poster instead.
    ============================================================ */
+function esc(str){ return String(str).replace(/"/g, '&quot;'); }
+
 function renderLibrary(gridId, items){
   var grid = document.getElementById(gridId);
   grid.innerHTML = items.map(function(item){
-    return '<div class="card" data-cat="'+item.cat+'">' +
+    var hasVideo = !!item.video;
+    return '<div class="card'+(hasVideo ? ' has-video' : '')+'" data-cat="'+item.cat+'"' +
+        (hasVideo ? ' data-video="'+esc(item.video)+'" data-title="'+esc(item.title)+'"' : '') + '>' +
       '<div class="card-media">' +
+        (item.thumb ? '<img class="card-thumb" src="'+esc(item.thumb)+'" alt="" />' : '') +
         '<div class="play">&#9658;</div>' +
         '<span class="card-duration">'+item.duration+'</span>' +
       '</div>' +
@@ -646,7 +685,7 @@ function wireFilters(filterContainerId, gridId){
 var medItems = [
   { title:"Deep Sleep Wind-Down", tag:"Sleep", cat:"sleep", duration:"22 min", desc:"A body-scan led descent into sleep, for restless nights." },
   { title:"Calming the Anxious Mind", tag:"Anxiety", cat:"anxiety", duration:"12 min", desc:"Breath-led regulation for when your thoughts are moving faster than you are." },
-  { title:"Morning Clarity", tag:"Morning", cat:"morning", duration:"8 min", desc:"A short grounding practice to open the day with intention." },
+  { title:"Morning Clarity", tag:"Morning", cat:"morning", duration:"8 min", desc:"A short grounding practice to open the day with intention.", video:"https://www.youtube.com/watch?v=inpok4MKVLM", thumb:"https://img.youtube.com/vi/inpok4MKVLM/hqdefault.jpg" },
   { title:"Focus Before Work", tag:"Focus", cat:"focus", duration:"10 min", desc:"Settle a scattered mind before a big task or meeting." },
   { title:"Releasing the Day", tag:"Sleep", cat:"sleep", duration:"18 min", desc:"Unwind the nervous system before bed." },
   { title:"Steady in Uncertainty", tag:"Anxiety", cat:"anxiety", duration:"15 min", desc:"For the moments that feel bigger than you can hold alone." }
@@ -657,7 +696,7 @@ wireFilters('medFilters', 'medGrid');
 /* ---- Yoga ---- */
 var yogaItems = [
   { title:"Yin for Tight Hips", tag:"Yin", cat:"yin", duration:"35 min", desc:"Long, passive holds to release deep connective tissue." },
-  { title:"Soft Flow — Full Body", tag:"Soft flow", cat:"flow", duration:"28 min", desc:"A gentle, breath-led sequence to move the whole body." },
+  { title:"Soft Flow — Full Body", tag:"Soft flow", cat:"flow", duration:"28 min", desc:"A gentle, breath-led sequence to move the whole body.", video:"https://www.youtube.com/watch?v=v7AYKMP6rOE", thumb:"https://img.youtube.com/vi/v7AYKMP6rOE/hqdefault.jpg" },
   { title:"Restorative Evening Wind-Down", tag:"Restorative", cat:"restorative", duration:"20 min", desc:"Supported poses to shift out of a busy day." },
   { title:"Yin for the Spine", tag:"Yin", cat:"yin", duration:"30 min", desc:"Gentle spinal release for desk-heavy days." },
   { title:"Slow Sun Salutations", tag:"Soft flow", cat:"flow", duration:"18 min", desc:"A softened take on the classic sequence." },
@@ -792,6 +831,45 @@ document.getElementById('reminderList').addEventListener('click', function(e){
   reminders.splice(i, 1);
   renderReminders();
 });
+
+/* ============================================================
+   Video lightbox — click any library card that has a `video`
+   URL to open an embedded YouTube/Vimeo player.
+   Supported URL formats (paste any of these into `video`):
+     youtube.com/watch?v=ID   youtu.be/ID   vimeo.com/ID
+   ============================================================ */
+function toEmbedUrl(url){
+  if(!url) return '';
+  var yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  if(yt) return 'https://www.youtube.com/embed/' + yt[1] + '?autoplay=1&rel=0';
+  var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if(vm) return 'https://player.vimeo.com/video/' + vm[1] + '?autoplay=1';
+  return url; /* assume already an embeddable URL */
+}
+
+var videoModal = document.getElementById('videoModal');
+var videoFrame = document.getElementById('videoFrame');
+var videoModalTitle = document.getElementById('videoModalTitle');
+
+function openVideo(url, title){
+  videoFrame.innerHTML = '<iframe src="' + toEmbedUrl(url) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+  videoModalTitle.textContent = title || '';
+  videoModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeVideo(){
+  videoModal.classList.remove('open');
+  videoFrame.innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('click', function(e){
+  var card = e.target.closest('.card.has-video');
+  if(card){ openVideo(card.getAttribute('data-video'), card.getAttribute('data-title')); }
+});
+document.getElementById('videoClose').addEventListener('click', closeVideo);
+videoModal.addEventListener('click', function(e){ if(e.target === videoModal){ closeVideo(); } });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ closeVideo(); } });
 </script>
 </body>
 </html>
